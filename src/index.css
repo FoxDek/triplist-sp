@@ -11,9 +11,16 @@
   --color-background-dark: #202020;
   --color-accent-dark: #f16b34;
   --color-text-color-dark: #ffffff;
+
+  --breakpoint-xs: 480px;
 }
 
-
+.lucide,
+svg {
+  transform: translateZ(0); 
+  will-change: transform;
+  backface-visibility: hidden;
+}
 
 body {
   font-family: "Open Sans", sans-serif;
