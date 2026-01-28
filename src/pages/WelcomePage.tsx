@@ -1,13 +1,17 @@
 import { cva } from "class-variance-authority";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Button from '../shared/ui/Button';
 
 const welcomeContainer = cva("flex items-center justify-center h-full min-h-screen w-full")
-const welcomeButton = cva("bg-accent text-white text-md font-bold py-2 px-8 rounded-2xl hover:scale-105 hover:shadow-md hover:shadow-accent/30 transition duration-300 ease-in-out ")
+
 
 export default function WelcomePage() {
+  const navigate = useNavigate();
+
+
   return (
     <div className={welcomeContainer()}>
-      <Link to="/trips" className={welcomeButton()}>My Trips</Link>
+      <Button mode="accent" text="My trips" onClick={() => navigate('/trips')} />
     </div>
   )
 }

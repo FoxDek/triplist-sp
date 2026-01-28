@@ -1,19 +1,29 @@
 import { cva } from "class-variance-authority";
-import { trips } from "../assets/data";
 import TripItem from "./TripItem";
 import SubHeader from "../shared/ui/SubHeader";
+import { tripsService } from "../services/trips.service";
+import { useLiveQuery } from "dexie-react-hooks";
 
 // CVA селекторы
 const myTrips = cva("myTrips w-full flex flex-col gap-2");
 const myTripsList = cva(
-  "myTripsList w-full flex flex-col gap-4 rounded-3xl lg:grid lg:grid-cols-2",
+  "myTripsList w-full flex flex-col gap-4 lg:grid lg:grid-cols-2",
 );
 const myTripsEmpty = cva(
-  "myTripsEmpty flex items-center justify-center h-20 w-full border-accent border-2 rounded-3xl",
+  "myTripsEmpty flex items-center justify-center h-40 w-full border-accent border-2 rounded-3xl",
 );
 const myTripsEmptyText = cva("myTripsEmptyText text-xl font-semibold");
 
 export default function MyTrips() {
+  const trips = useLiveQuery(
+    () => tripsService.getAll(),
+    [],
+  )
+
+  if (!trips) {
+    return null;
+  }
+
   return (
     <section className={myTrips()}>
       <SubHeader headerText='My Trips' additionalClass='myTripsHeader ml-4' />

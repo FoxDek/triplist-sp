@@ -36,7 +36,6 @@ function App() {
           <Route path='/' element={<WelcomePage />} />
           <Route path='/trips' element={<Trips />} />
           <Route path='/trip/:id' element={<TripPage />} />
-          <Route path='/new-trip/:countryName' element={<TripPage />} />
         </Routes>
       </div>
     </main>

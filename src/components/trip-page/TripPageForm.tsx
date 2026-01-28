@@ -2,16 +2,16 @@ import { cva } from "class-variance-authority";
 import { useState } from "react";
 import { purposeDropdownData } from "../../assets/dropdown-lists-data";
 import { useCountries } from "../../hooks/useCountries";
-import type { TripFormData } from "../../entities/types";
 import DropdownInput from "../../shared/ui/DropdownInput";
+import type { TripFormData } from "../../db/schema";
 
 interface TripPageFormProps {
   formData: TripFormData;
   setFormData: React.Dispatch<React.SetStateAction<TripFormData>>
 }
 
-const tripForm = cva('tripForm grid w-full grid-cols-1 sm:grid-cols-2 bg-accent p-4 rounded-3xl gap-4 relative');
-const tripFormInput = cva("tripFormInput w-full border-2 border-white/80 rounded-2xl py-2 px-4 outline-none bg-white dark:bg-background-dark dark:text-text-color-dark dark:border-transparent transition ease-in-out");
+const tripForm = cva('tripForm grid w-full grid-cols-1 sm:grid-cols-2 bg-accent p-2 rounded-2xl gap-2 relative');
+const tripFormInput = cva("tripFormInput w-full border-2 border-white/80 rounded-xl py-2 px-4 outline-none bg-white dark:bg-background-dark dark:text-text-color-dark dark:border-transparent transition ease-in-out");
 
 export default function TripPageForm({ formData, setFormData }: TripPageFormProps) {
   const [usedDropdown, setUsedDropdown] = useState<string>('');
@@ -29,13 +29,8 @@ export default function TripPageForm({ formData, setFormData }: TripPageFormProp
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log(formData);
-  }
-
   return (
-    <form action="" className={tripForm()} onSubmit={handleSubmit}>
+    <form action="" className={tripForm()}>
       <input name="name" type="text" placeholder="name" value={formData.name} onChange={handleChange} className={tripFormInput()} />
       <DropdownInput 
         value={formData.purpose}

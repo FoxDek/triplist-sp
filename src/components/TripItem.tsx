@@ -1,7 +1,11 @@
 import { cva } from "class-variance-authority";
 import { Ellipsis, EllipsisVertical, Luggage, SquareCheck } from "lucide-react";
-import type { Trip } from "../entities/types";
 import { Link } from "react-router-dom";
+import type { Trip } from "../db/schema";
+import { dateAdaptation } from "../utils/dateFormat.utils";
+import { tripItemsService } from '../services/tripItems.service';
+import { useLiveQuery } from "dexie-react-hooks";
+import { tripTasksService } from "../services/tripTasks.service";
 
 
 const tripItem = cva("tripItem bg-accent py-4 px-6 rounded-2xl flex flex-col md:flex-row justify-between hover:scale-101 transition ease-in-out gap-5 hover:shadow-md hover:shadow-accent/30");
@@ -19,21 +23,20 @@ const tripDetailsBlockIcon = cva("tripDetailsBlockIcon w-full h-full max-w-10");
 const tripDetailsBlockText = cva("tripDetailsBlockText font-bold");
 
 export default function TripItem({ trip }: { trip: Trip }) {
-
-  function dateAdaptation(date: Date) {
-    const day = date.getDate();
-    const month = date.toLocaleString('ru-RU', { month: 'long' });
-    const year = date.getFullYear();
-
-    return {
-      day,
-      month,
-      year
-    }
-  }
-
   const startDate = trip.startDate && dateAdaptation(trip.startDate);
   const endDate = trip.endDate && dateAdaptation(trip.endDate);
+
+  const tripItemsCount = useLiveQuery(
+    () => tripItemsService.getAllByTripId(trip.id!).then(items => items.length),
+    [trip.id],
+    0
+  )
+
+  const tripTasksCount = useLiveQuery(
+    () => tripTasksService.getAllByTripId(trip.id!).then(tasks => tasks.length),
+    [trip.id],
+    0
+  )
 
   return (
     <Link to={`/trip/${trip.id}`} className={tripItem()}>
@@ -47,22 +50,22 @@ export default function TripItem({ trip }: { trip: Trip }) {
           </div>
         </div>
 
-        <div className={tripDates()}>
-          {startDate && endDate && <p className={tripDate()}> {startDate.day + " " + startDate.month + " "} {startDate.year === endDate.year ? "" : startDate.year} </p>}
-          {startDate && <span className={tripDate()}>—</span>}
+        {startDate && <div className={tripDates()}>
+          {startDate && <p className={tripDate()}> {startDate.day + " " + startDate.month + " "} {endDate && startDate.year === endDate.year ? "" : startDate.year} </p>}
+          {startDate && endDate && <span className={tripDate()}>—</span>}
           {endDate && <p className={tripDate()}>{endDate.day + " " + endDate.month + " " + endDate.year}</p>}
-        </div>
+        </div>}
       </div>
 
       <div className={tripItemRight()}>
         <div className={tripDetails()}>
           <div className={tripDetailsBlock()}>
             <Luggage className={tripDetailsBlockIcon()} />
-            <span className={tripDetailsBlockText()}> {trip.itemIds.length}</span>
+            <span className={tripDetailsBlockText()}> {tripItemsCount}</span>
           </div>
           <div className={tripDetailsBlock()}>
             <SquareCheck className={tripDetailsBlockIcon()} />
-            <span className={tripDetailsBlockText()}>{trip.taskIds.length}</span>
+            <span className={tripDetailsBlockText()}>{tripTasksCount}</span>
           </div>
         </div>
 
